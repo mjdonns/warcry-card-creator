@@ -1,4 +1,6 @@
-# Warcry Card Creator 2.0 – Fighters and Abilities
+Just seeing if I can figure out how to add abilities to these cards.
+
+<!-- # Warcry Card Creator 2.0 – Fighters and Abilities
 
 ****
 
@@ -19,3 +21,4 @@ _Warhammer Age of Sigmar: Warcry © Copyright Games Workshop Ltd. GW, Games Work
 ## Run locally
 
 If you wish to run this repository locally on your computer, install Jekyll and run `$ jekyll serve`.
+ -->
