@@ -1,3 +1,5 @@
+// import {drawAbility} from './abilities'
+
 writeValue = function(ctx, value, pos) {
     var scale = getScalingFactor(getCanvas(), getBackgroundImage());
     pos = {x: pos.x / scale.x, y: pos.y / scale.y };
@@ -404,6 +406,7 @@ function writeWeaponControls(weaponId, weaponData, weaponName)
         "white");
 }
 
+
 function readTagRunemarks()
 {
     var array = new Array;
@@ -489,7 +492,7 @@ function drawSubfactionRunemark(image)
     var size = scalePixelPosition({x: 120, y: 120});
     drawImageSrc(position, size, image);
 }
-render = function(fighterData) {
+render = function(fighterData, cardData) {
     drawBackground();
 
     drawModel(fighterData.imageUrl, fighterData.imageProperties);
@@ -537,6 +540,40 @@ render = function(fighterData) {
     {
         drawTagRunemark(i, fighterData.tagRunemarks[i]);
     }
+
+    // Abilities
+    drawBackground();
+    // drawModel(cardData.imageUrl, cardData.imageProperties);
+
+    drawCardTranslationAbilities(cardData.cardTranslationAbilities);
+    // drawCardTitle(cardData.cardTitle);
+
+    // drawFactionRunemark(cardData.factionRunemark);
+    // drawSubfactionRunemark(cardData.subfactionRunemark);
+
+    if (document.getElementById('ability1-toggle').checked) {
+        drawAbility(1, {x: 1000, y:  600});
+    }
+
+    if (document.getElementById('ability2-toggle').checked) {
+        drawAbility(2, {x: 1000, y:  750});
+    }
+
+    if (document.getElementById('ability3-toggle').checked) {
+        drawAbility(3, {x: 1000, y:  900});
+    }
+
+    if (document.getElementById('ability4-toggle').checked) {
+        drawAbility(4, {x: 1000, y:  1050});
+    }
+
+    // if (document.getElementById('ability5-toggle').checked) {
+    //     drawAbility(5, {x: 1000, y:  925});
+    // }
+
+    // if (document.getElementById('ability6-toggle').checked) {
+    //     drawAbility(6, {x: 1000, y: 1100});
+    // }
 }
 
 function writeControls(fighterData)
@@ -720,15 +757,19 @@ function getLatestFighterDataName()
 window.onload = function() {
     //window.localStorage.clear();
     var fighterData = loadLatestFighterData();
+    var cardData = loadLatestCardData();
     writeControls(fighterData);
-    render(fighterData);
+    writeCardControls(cardData)
+    render(fighterData, cardData);
     refreshSaveSlots();
 }
 
 onAnyChange = function() {
     var fighterData = readControls();
-    render(fighterData);
+    var cardData = loadLatestCardData();
+    render(fighterData, cardData);
     saveLatestFighterData();
+    saveLatestCardData();
 }
 
 function onWeaponControlsToggled(weaponCheckbox) {
@@ -854,7 +895,9 @@ function onClearCache()
 function onResetToDefault()
 {
     var fighterData = defaultFighterData();
+    var cardData = defaultCardData();
     writeControls(fighterData);
+    writeCardControls(cardData);
     render(fighterData);
 }
 
@@ -932,3 +975,332 @@ $(document).ready(function() {
     ctx.arc(95,50,40,0,2*Math.PI);
     // ctx.stroke();
 });
+// 
+// Anything below here is copied from ./abilities.js cuz I'm dumb and dont' know how to import properly
+
+function drawAbility(id, pixelPosition) {
+    getContext().font = '28px Georgia, serif';
+    getContext().fillStyle = 'black';
+    getContext().textAlign = 'left';
+
+    var double      = document.getElementById('ability' + id + '-double'),
+        triple      = document.getElementById('ability' + id + '-triple'),
+        quad        = document.getElementById('ability' + id + '-quad'),
+        name        = document.getElementById('ability' + id + '-name').value,
+        text        = document.getElementById('ability' + id + '-text').value;
+        transDouble = document.getElementById('card-translation-double').value,
+        transTriple = document.getElementById('card-translation-triple').value,
+        transQuad   = document.getElementById('card-translation-quad').value;
+
+    // https://stackoverflow.com/a/35119260; http://jsfiddle.net/BaG4J/1/
+    var textblock = (function() {
+        var txt = '';
+
+        if (double.checked) {
+            if (transDouble.length) {
+                var txt = '[' + transDouble + '] ' + name + ': ' + text;
+            } else {
+                var txt = '[Double] ' + name + ': ' + text;
+            }
+        } else if (triple.checked) {
+            if (transTriple.length) {
+                var txt = '[' + transTriple + '] ' + name + ': ' + text;
+            } else {
+                var txt = '[Triple] ' + name + ': ' + text;
+            }
+        } else if (quad.checked) {
+            if (transQuad.length) {
+                var txt = '[' + transQuad + '] ' + name + ': ' + text;
+            } else {
+                var txt = '[Quad] ' + name + ': ' + text;
+            }
+        }
+
+        var lines = txt.split('\n');
+
+        for (var i = 0; i < lines.length; i++) {
+            writeScaled(
+                lines[i],
+                {x: pixelPosition.x, y: pixelPosition.y+(i*35)}
+            );
+        }
+    })();
+}
+
+function writeCardControls(cardData)
+{
+    setName(cardData.name);
+    // setModelImage(cardData.imageUrl);
+    // setModelImageProperties(cardData.imageProperties);
+
+    $('#card-title').value = cardData.cardTitle;
+    $('#card-translation-abilities').value = cardData.cardTranslationAbilities;
+    $('#card-translation-double').value = cardData.cardTranslationDouble;
+    $('#card-translation-triple').value = cardData.cardTranslationTriple;
+    $('#card-translation-quad').value = cardData.cardTranslationQuad;
+
+    setSelectedFactionRunemark(cardData.factionRunemark);
+
+    setSelectedSubfactionRunemark(cardData.subfactionRunemark);
+
+     $('#ability1-name').value = cardData.ability1Name;
+     $('#ability2-name').value = cardData.ability2Name;
+     $('#ability3-name').value = cardData.ability3Name;
+     $('#ability4-name').value = cardData.ability4Name;
+     $('#ability5-name').value = cardData.ability5Name;
+     $('#ability6-name').value = cardData.ability6Name;
+
+     $('#ability1-text').text(cardData.ability1Text);
+     $('#ability2-text').text(cardData.ability2Text);
+     $('#ability3-text').text(cardData.ability3Text);
+     $('#ability4-text').text(cardData.ability4Text);
+     $('#ability5-text').text(cardData.ability5Text);
+     $('#ability6-text').text(cardData.ability6Text);
+
+    // $("#toughness")[0].value = cardData.toughness;
+    // $("#numWounds")[0].value = cardData.wounds;
+    // $("#movement")[0].value = cardData.move;
+    // $("#pointCost")[0].value = cardData.pointCost;
+
+    var runes_one = cardData.tagRunemarksOne,
+        runes_two = cardData.tagRunemarksTwo,
+        runes_three = cardData.tagRunemarksThree,
+        runes_four = cardData.tagRunemarksFour,
+        runes_five = cardData.tagRunemarksFive,
+        runes_six = cardData.tagRunemarksSix
+    var tagRuneMarks = $.merge(runes_one, runes_two, runes_three, runes_four, runes_five, runes_six)
+
+    setSelectedTagRunemarks(tagRuneMarks);
+
+    // writeWeaponControls("#weapon1", cardData.weapon1, "weapon1");
+    // writeWeaponControls("#weapon2", cardData.weapon2, "weapon2");
+}
+
+function defaultCardData() {
+    var cardData = new Object;
+    cardData.name = 'Default';
+    // cardData.imageUrl = null;
+    // cardData.imageProperties = getDefaultModelImageProperties();
+
+    cardData.cardTitle = 'Iron Golem';
+    cardData.cardTranslationAbilities = 'Abilities';
+    cardData.cardTranslationDouble = 'Double';
+    cardData.cardTranslationTriple = 'Triple';
+    cardData.cardTranslationQuad = 'Quad';
+
+    cardData.factionRunemark = 'runemarks/white/factions-chaos-iron-golems.svg';
+    cardData.subfactionRunemark = 'assets/img/blank.gif';
+
+    cardData.ability1Name = 'First ability name';
+    cardData.ability2Name = 'Second ability name';
+    cardData.ability3Name = 'Third ability name';
+    cardData.ability4Name = 'Fourth ability name';
+    cardData.ability5Name = 'Fifth ability name';
+    cardData.ability6Name = 'Sixth ability name';
+
+    cardData.ability1Text = 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.\nAenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis\ndis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque\neu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel.';
+    cardData.ability2Text = 'Lorem ipsum dolor sit amet,\nconsectetuer adipiscing elit.\nAenean commodo ligula eget dolor.';
+    cardData.ability3Text = 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.\nAenean commodo ligula eget dolor.';
+    cardData.ability4Text = 'Lorem ipsum dolor sit amet,\nconsectetuer adipiscing elit.\nAenean commodo ligula eget dolor.';
+    cardData.ability5Text = 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.\nAenean commodo ligula eget dolor.';
+    cardData.ability6Text = 'Lorem ipsum dolor sit amet,\nconsectetuer adipiscing elit.\nAenean commodo ligula eget dolor.';
+
+    // cardData.toughness = 4;
+    // cardData.wounds = 15;
+    // cardData.move = 5;
+    // cardData.pointCost = 125;
+
+    cardData.tagRunemarksOne = new Array;
+    cardData.tagRunemarksOne.push('runemarks/black/fighters-berserker.svg');
+
+    cardData.tagRunemarksTwo = new Array;
+    cardData.tagRunemarksThree = new Array;
+    cardData.tagRunemarksFour = new Array;
+    cardData.tagRunemarksFive = new Array;
+    cardData.tagRunemarksSix = new Array;
+
+    // cardData.weapon1 = getDefaultWeaponData1();
+    // cardData.weapon2 = getDefaultWeaponData2();
+    return cardData;
+}
+
+function saveCardDataMap(newMap)
+{
+    window.localStorage.setItem("cardDataMap", JSON.stringify(newMap));
+}
+
+function loadCardDataMap()
+{
+    var storage = window.localStorage.getItem("cardDataMap");
+    if (storage != null)
+    {
+        return JSON.parse(storage);
+    }
+    // Set up the map.
+    var map = new Object;
+    map["Default"] = defaultCardData();
+    saveCardDataMap(map);
+    return map;
+}
+
+function loadLatestCardData()
+{
+    var latestFighterName = window.localStorage.getItem("latestFighterName");
+    if (latestFighterName == null)
+    {
+        latestFighterName = "Default";
+    }
+
+    console.log("Loading '" + latestFighterName + "'...");
+
+    var data = loadCardData(latestFighterName);
+
+    if (data)
+    {
+        console.log("Loaded data:");
+        console.log(data);
+    }
+    else
+    {
+        console.log("Failed to load a fighter data.");
+    }
+
+    return data;
+}
+
+function saveLatestCardData()
+{
+    var cardData = readControls();
+    if (!cardData.name)
+    {
+        return;
+    }
+
+    window.localStorage.setItem("latestFighterName", cardData.name);
+    saveCardData(cardData);
+}
+
+function loadCardData(cardDataName)
+{
+    if (!cardDataName)
+    {
+        return null;
+    }
+
+    var map = loadCardDataMap();
+    if (map[cardDataName])
+    {
+        return map[cardDataName];
+    }
+
+    return null;
+}
+
+function getBase64Image(img) {
+    var canvas = document.createElement("canvas");
+    canvas.width = img.width;
+    canvas.height = img.height;
+
+    var ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0);
+
+    var dataURL = canvas.toDataURL("image/png");
+
+    return dataURL;
+}
+
+function onload2promise(obj){
+    return new Promise((resolve, reject) => {
+        obj.onload = () => resolve(obj);
+        obj.onerror = reject;
+    });
+}
+
+async function getBase64ImgFromUrl(imgUrl){
+    let img = new Image();
+    let imgpromise = onload2promise(img); // see comment of T S why you should do it this way.
+    img.src = imgUrl;
+    await imgpromise;
+    var imgData = getBase64Image(img);
+    return imgData;
+}
+
+async function handleImageUrlFromDisk(imageUrl)
+{
+    if (imageUrl &&
+        imageUrl.startsWith("blob:"))
+    {
+        // The image was loaded from disk. So we can load it later, we need to stringify it.
+        imageUrl = await getBase64ImgFromUrl(imageUrl);
+    }
+
+    return imageUrl;
+}
+
+async function saveCardData(cardData)
+{
+    var finishSaving = function()
+    {
+        var map = loadCardDataMap();
+        map[cardData.name] = cardData;
+        window.localStorage.setItem("cardDataMap", JSON.stringify(map));
+    };
+
+    if (cardData != null &&
+        cardData.name)
+    {
+        // handle images we may have loaded from disk...
+        cardData.imageUrl = await handleImageUrlFromDisk(cardData.imageUrl);
+        cardData.factionRunemark = await handleImageUrlFromDisk(cardData.factionRunemark);
+        cardData.subfactionRunemark = await handleImageUrlFromDisk(cardData.subfactionRunemark);
+
+        for (i = 0; i < cardData.tagRunemarksOne.length; i++)
+        {
+            cardData.tagRunemarksOne[i] = await handleImageUrlFromDisk(cardData.tagRunemarksOne[i]);
+        }
+        for (i = 0; i < cardData.tagRunemarksTwo.length; i++)
+        {
+            cardData.tagRunemarksTwo[i] = await handleImageUrlFromDisk(cardData.tagRunemarksTwo[i]);
+        }
+        for (i = 0; i < cardData.tagRunemarksThree.length; i++)
+        {
+            cardData.tagRunemarksThree[i] = await handleImageUrlFromDisk(cardData.tagRunemarksThree[i]);
+        }
+        for (i = 0; i < cardData.tagRunemarksFour.length; i++)
+        {
+            cardData.tagRunemarksFour[i] = await handleImageUrlFromDisk(cardData.tagRunemarksFour[i]);
+        }
+        for (i = 0; i < cardData.tagRunemarksFive.length; i++)
+        {
+            cardData.tagRunemarksFive[i] = await handleImageUrlFromDisk(cardData.tagRunemarksFive[i]);
+        }
+        for (i = 0; i < cardData.tagRunemarksSix.length; i++)
+        {
+            cardData.tagRunemarksSix[i] = await handleImageUrlFromDisk(cardData.tagRunemarksSix[i]);
+        }
+
+        // cardData.weapon1.runemark = await handleImageUrlFromDisk(cardData.weapon1.runemark);
+        // cardData.weapon2.runemark = await handleImageUrlFromDisk(cardData.weapon2.runemark);
+
+        finishSaving();
+    }
+}
+
+function getLatestCardDataName()
+{
+    return "latestCardData";
+}
+
+drawCardTranslationAbilities = function(value) {
+    getContext().font = '28px Georgia, serif';
+    getContext().fillStyle = 'white';
+    getContext().textAlign = 'center';
+    writeScaled(value, {x: (1772/2), y: 55});
+}
+
+drawCardTitle = function(value) {
+    getContext().font = '92px rodchenkoctt';
+    getContext().fillStyle = 'white';
+    getContext().textAlign = 'center';
+    writeScaled(value, {x: (1772/2), y: 135});
+}
