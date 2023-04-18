@@ -541,31 +541,38 @@ render = function(fighterData, cardData) {
         drawTagRunemark(i, fighterData.tagRunemarks[i]);
     }
 
-    // Abilities
-    drawBackground();
-    // drawModel(cardData.imageUrl, cardData.imageProperties);
+    // // Abilities
+    renderAbilities(cardData);
 
-    drawCardTranslationAbilities(cardData.cardTranslationAbilities);
-    // drawCardTitle(cardData.cardTitle);
 
-    // drawFactionRunemark(cardData.factionRunemark);
-    // drawSubfactionRunemark(cardData.subfactionRunemark);
+    // 
+    // 
+    // 
 
-    if (document.getElementById('ability1-toggle').checked) {
-        drawAbility(1, {x: 1000, y:  600});
-    }
+    // drawBackground();
+    // // drawModel(cardData.imageUrl, cardData.imageProperties);
 
-    if (document.getElementById('ability2-toggle').checked) {
-        drawAbility(2, {x: 1000, y:  750});
-    }
+    // drawCardTranslationAbilities(cardData.cardTranslationAbilities);
+    // // drawCardTitle(cardData.cardTitle);
 
-    if (document.getElementById('ability3-toggle').checked) {
-        drawAbility(3, {x: 1000, y:  900});
-    }
+    // // drawFactionRunemark(cardData.factionRunemark);
+    // // drawSubfactionRunemark(cardData.subfactionRunemark);
 
-    if (document.getElementById('ability4-toggle').checked) {
-        drawAbility(4, {x: 1000, y:  1050});
-    }
+    // if (document.getElementById('ability1-toggle').checked) {
+    //     drawAbility(1, {x: 1000, y:  600});
+    // }
+
+    // if (document.getElementById('ability2-toggle').checked) {
+    //     drawAbility(2, {x: 1000, y:  750});
+    // }
+
+    // if (document.getElementById('ability3-toggle').checked) {
+    //     drawAbility(3, {x: 1000, y:  900});
+    // }
+
+    // if (document.getElementById('ability4-toggle').checked) {
+    //     drawAbility(4, {x: 1000, y:  750});
+    // }
 
     // if (document.getElementById('ability5-toggle').checked) {
     //     drawAbility(5, {x: 1000, y:  925});

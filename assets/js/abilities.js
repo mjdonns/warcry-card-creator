@@ -1,27 +1,6 @@
-writeValue = function(ctx, value, pos) {
-    var scale = getScalingFactor(getCanvas(), getBackgroundImage());
-    pos = {x: pos.x / scale.x, y: pos.y / scale.y };
 
-    ctx.save();
-    ctx.scale(scale.x, scale.y);
-    ctx.fillText(value, pos.x, pos.y);
-    ctx.restore();
-}
 
-getScalingFactor = function(canvas, warcryCardOne) {
-    return {
-        x: canvas.width  / warcryCardOne.width,
-        y: canvas.height / warcryCardOne.height
-    };
-}
 
-getCanvas = function() {
-    return document.getElementById("canvas");
-}
-
-getContext = function() {
-    return getCanvas().getContext("2d");
-}
 
 getBackgroundImage = function() {
     if (document.getElementById('select-bg-dark-102').checked) {
@@ -43,16 +22,9 @@ drawBackground = function() {
         getBackgroundImage(), 0, 0, getCanvas().width, getCanvas().height);
 }
 
-scalePixelPosition = function(pixelPosition) {
-    var scalingFactor = getScalingFactor(getCanvas(), getBackgroundImage());
-    var scaledPosition = {x: pixelPosition.x * scalingFactor.x, y: pixelPosition.y * scalingFactor.y};
-    return scaledPosition;
-}
 
-writeScaled = function(value, pixelPos) {
-    var scaledPos = scalePixelPosition(pixelPos);
-    writeValue(getContext(), value, scaledPos);
-}
+
+
 
 drawCardElementFromInput = function(inputElement, pixelPosition) {
     var value = inputElement.value;
@@ -63,152 +35,10 @@ drawCardElementFromInputId = function(inputId, pixelPosition) {
     drawCardElementFromInput(document.getElementById(inputId), pixelPosition);
 }
 
-// drawToughness = function(value) {
-//     writeScaled(value, {x: 545, y: 391});
-// }
-//
-// drawWounds = function(value) {
-//     writeScaled(value, {x: 380, y: 510});
-// }
-//
-// drawMove = function(value) {
-//     writeScaled(value, {x: 220, y: 391});
-// }
-//
-// drawPointCost = function(value) {
-//     writeScaled(value, {x: 805, y: 160});
-// }
 
 
 
 
-
-
-
-drawAbility = function(id, pixelPosition) {
-    getContext().font = '28px Georgia, serif';
-    getContext().fillStyle = 'black';
-    getContext().textAlign = 'left';
-
-    var double      = document.getElementById('ability' + id + '-double'),
-        triple      = document.getElementById('ability' + id + '-triple'),
-        quad        = document.getElementById('ability' + id + '-quad'),
-        name        = document.getElementById('ability' + id + '-name').value,
-        text        = document.getElementById('ability' + id + '-text').value,
-        transDouble = document.getElementById('card-translation-double').value,
-        transTriple = document.getElementById('card-translation-triple').value,
-        transQuad   = document.getElementById('card-translation-quad').value;
-
-    // https://stackoverflow.com/a/35119260; http://jsfiddle.net/BaG4J/1/
-    var textblock = (function() {
-        var txt = '';
-
-        if (double.checked) {
-            if (transDouble.length) {
-                var txt = '[' + transDouble + '] ' + name + ': ' + text;
-            } else {
-                var txt = '[Double] ' + name + ': ' + text;
-            }
-        } else if (triple.checked) {
-            if (transTriple.length) {
-                var txt = '[' + transTriple + '] ' + name + ': ' + text;
-            } else {
-                var txt = '[Triple] ' + name + ': ' + text;
-            }
-        } else if (quad.checked) {
-            if (transQuad.length) {
-                var txt = '[' + transQuad + '] ' + name + ': ' + text;
-            } else {
-                var txt = '[Quad] ' + name + ': ' + text;
-            }
-        }
-
-        var lines = txt.split('\n');
-
-        for (var i = 0; i < lines.length; i++) {
-            writeScaled(
-                lines[i],
-                {x: pixelPosition.x, y: pixelPosition.y+(i*35)}
-            );
-        }
-    })();
-}
-
-drawCardTranslationAbilities = function(value) {
-    getContext().font = '28px Georgia, serif';
-    getContext().fillStyle = 'white';
-    getContext().textAlign = 'center';
-    writeScaled(value, {x: (1772/2), y: 55});
-}
-
-drawCardTitle = function(value) {
-    getContext().font = '92px rodchenkoctt';
-    getContext().fillStyle = 'white';
-    getContext().textAlign = 'center';
-    writeScaled(value, {x: (1772/2), y: 135});
-}
-
-
-
-
-
-
-
-// getWeaponStatblockImage = function() {
-//     return document.getElementById("weapon-profile");
-// }
-
-// drawWeaponStatblock = function(pixelPosition) {
-//     var image = getWeaponStatblockImage();
-//     var scaledPosition = scalePixelPosition(pixelPosition);
-//     // var scaledSize = scalePixelPosition({x: image.width, y: image.height});
-//     // getContext().drawImage(
-//     //     image,
-//     //     scaledPosition.x,
-//     //     scaledPosition.y,
-//     //     scaledSize.x,
-//     //     scaledSize.y);
-// }
-
-// drawWeapon = function(weaponData, pixelPosition) {
-//     drawWeaponStatblock(pixelPosition);
-//
-//     var statsPosY = pixelPosition.y + 95;
-//
-//     var range = (weaponData.rangeMin > 0 ? (weaponData.rangeMin + "-") : "") + weaponData.rangeMax;
-//
-//     getContext().textAlign = "center";
-//
-//     writeScaled(range, {x: pixelPosition.x + 250, y: statsPosY});
-//
-//     writeScaled(
-//         weaponData.attacks,
-//         {x: pixelPosition.x + 440, y: statsPosY});
-//
-//     writeScaled(
-//         weaponData.strength,
-//         {x: pixelPosition.x + 620, y: statsPosY});
-//
-//     writeScaled(
-//         weaponData.damageBase + "/" + weaponData.damageCrit,
-//         {x: pixelPosition.x + 790, y: statsPosY});
-//
-//     var position = scalePixelPosition({x: pixelPosition.x + 20, y: pixelPosition.y + 30});
-//     var size = scalePixelPosition({x: 120, y: 120});
-//     drawImageSrc(position, size, weaponData.runemark);
-// }
-
-// function getWeapon(weaponId) {
-//     return $(weaponId).find("#weaponEnabled")[0].checked ? $(weaponId) : null;
-// }
-//
-// function getWeapon1() {
-//     return getWeapon("#weapon1");
-// }
-//
-// function getWeapon2() {
-//     return getWeapon("#weapon2");
-// }
 
 function getLabel(element)
 {
@@ -229,49 +59,7 @@ function getSelectedRunemark(radioDiv) {
     }
     return null;
 }
-/*
-function setSelectedRunemark(radioDiv, runemark, radioGroupName, bgColor)
-{
-    // uncheck all
-    {
-        var checked = $(radioDiv).find('input:checked');
-        for (var i = 0; i < checked.length; i++)
-        {
-            checked[i].checked = false;
-        }
-        var icons = $(radioDiv).find('img');
-        for (var i = 0; i < icons.length; i++)
-        {
-            icons[i].style.backgroundColor = bgColor;
-        }
-    }
 
-    if (runemark != null)
-    {
-        var queryString = "img[src='"+ runemark +"']";
-        var img = $(radioDiv).find(queryString);
-        if (img.length > 0)
-        {
-            var radioButton = $(img[0].parentNode.parentNode).find("input")[0];
-            radioButton.checked = true;
-            // img[0].style.backgroundColor = "tomato";
-            img[0].style.backgroundColor = "#00bc8c";
-        }
-        else
-        {
-            var newDiv =
-                addToImageRadioSelector(
-                    runemark,
-                    radioDiv,
-                    radioGroupName,
-                    bgColor);
-            // $(newDiv).find("img")[0].style.backgroundColor = "tomato";
-            $(newDiv).find("img")[0].style.backgroundColor = "#00bc8c";
-            $(newDiv).find("input")[0].checked = true;
-        }
-    }
-}
-*/
 function setSelectedFactionRunemark(runemark){
     var factionRunemarksDiv = $("#factionRunemarkSelect");
     {
@@ -328,86 +116,6 @@ function getSelectedSubfactionRunemark() {
     return getSelectedRunemark($('#subfactionRunemarkSelect')[0]);
 }
 
-function drawImage(scaledPosition, scaledSize, image)
-{
-    if (image != null)
-    {
-        if (image.complete)
-        {
-            getContext().drawImage(image, scaledPosition.x, scaledPosition.y, scaledSize.x, scaledSize.y);
-        }
-        else
-        {
-            image.onload = function(){ drawImage(scaledPosition, scaledSize, image); };
-        }
-    }
-}
-
-function drawImageSrc(scaledPosition, scaledSize, imageSrc)
-{
-    if (imageSrc != null)
-    {
-        var image = new Image();
-        image.onload = function(){ drawImage(scaledPosition, scaledSize, image); };
-        image.src = imageSrc;
-    }
-}
-
-
-
-function drawTagRunemark(index, runemark, row) {
-    // draw the runemarks
-    var positions = []
-
-    if (row == 1 && document.getElementById('ability1-toggle').checked) {
-        positions = [{x: 175, y: 225}, {x: 285, y: 225}, {x: 395, y: 225}, {x: 505, y: 225}];
-    } else if (row == 2 && document.getElementById('ability2-toggle').checked) {
-        positions = [{x: 175, y: 410}, {x: 285, y: 410}, {x: 395, y: 410}, {x: 505, y: 410}];
-    } else if (row == 3 && document.getElementById('ability3-toggle').checked) {
-        positions = [{x: 175, y: 580}, {x: 285, y: 580}, {x: 395, y: 580}, {x: 505, y: 580}];
-    } else if (row == 4 && document.getElementById('ability4-toggle').checked) {
-        positions = [{x: 175, y: 760}, {x: 285, y: 760}, {x: 395, y: 760}, {x: 505, y: 760}];
-    } else if (row == 5 && document.getElementById('ability5-toggle').checked) {
-        positions = [{x: 175, y: 940}, {x: 285, y: 940}, {x: 395, y: 940}, {x: 505, y: 940}];
-    } else if (row == 6 && document.getElementById('ability6-toggle').checked) {
-        positions = [{x: 175, y: 1115}, {x: 285, y: 1115}, {x: 395, y: 1115}, {x: 505, y: 1115}];
-    }
-
-    if (index >= positions.length) return;
-
-    var img = $("#circle")[0],
-        position = scalePixelPosition(positions[index]),
-        size = scalePixelPosition({x: 90, y: 90});
-
-    // position = scalePixelPosition({x: positions[index].x + 15, y: positions[index].y + 15});
-    // size = scalePixelPosition({x: 130, y: 130});
-    position = scalePixelPosition({x: positions[index].x, y: positions[index].y});
-
-    drawImage(position, {x: 90, y: 90}, img);
-    drawImageSrc(position, size, runemark);
-}
-
-
-
-
-// function drawModel(imageUrl, imageProps)
-// {
-//     if (imageUrl != null)
-//     {
-//         var image = new Image();
-//         image.onload = function(){
-//             var position = scalePixelPosition({x: 590 + imageProps.offsetX, y: imageProps.offsetY});
-//             var scale = imageProps.scalePercent/100.0;
-//             var width = image.width * scale;
-//             var height = image.height * scale;
-//             getContext().drawImage(image, position.x, position.y, width, height);
-//
-//             URL.revokeObjectURL(image.src);
-//         };
-//         image.src = imageUrl;
-//     }
-// }
-
 function getName()
 {
     var textInput = $("#saveNameInput")[0];
@@ -419,120 +127,6 @@ function setName(name)
     var textInput = $("#saveNameInput")[0];
     textInput.value = name;
 }
-
-// function getModelImage()
-// {
-//     var imageSelect = $("#imageSelect")[0];
-//
-//     // if (imageSelect.files.length > 0)
-//     // {
-//     //     return URL.createObjectURL(imageSelect.files[0]);
-//     // }
-//
-//     return null;
-// }
-
-// function setModelImage(image)
-// {
-//     var imageSelect = $("#imageSelect")[0];
-//
-//     if (image != null)
-//     {
-//         // TODO: Not sure how to do this. It might not even be possible! Leave it for now...
-//         // imageSelect.files[0] = image;
-//     }
-//     else
-//     {
-//         // imageSelect.value = null;
-//     }
-// }
-
-// function getDefaultModelImageProperties()
-// {
-//     return {
-//         offsetX: 0,
-//         offsetY: 0,
-//         scalePercent: 100
-//     };
-// }
-
-// function getModelImageProperties()
-// {
-//     return {
-//         // offsetX: $("#imageOffsetX")[0].valueAsNumber,
-//         // offsetY: $("#imageOffsetY")[0].valueAsNumber,
-//         // scalePercent: $("#imageScalePercent")[0].valueAsNumber
-//     };
-// }
-
-// function setModelImageProperties(modelImageProperties)
-// {
-//     // $("#imageOffsetX")[0].value = modelImageProperties.offsetX;
-//     // $("#imageOffsetY")[0].value = modelImageProperties.offsetY;
-//     // $("#imageScalePercent")[0].value = modelImageProperties.scalePercent;
-// }
-
-// function getDefaultWeaponData()
-// {
-//     var weaponData = new Object;
-//     weaponData.enabled = true;
-//     weaponData.rangeMin = 0;
-//     weaponData.rangeMax = 1;
-//     weaponData.attacks = 1;
-//     weaponData.strength = 3;
-//     weaponData.damageBase = 1;
-//     weaponData.damageCrit = 2;
-//     weaponData.runemark = null;
-//     return weaponData;
-// }
-//
-// function getDefaultWeaponData1()
-// {
-//     var data = getDefaultWeaponData();
-//     data.enabled = true;
-//     return data;
-// }
-//
-// function getDefaultWeaponData2()
-// {
-//     var data = getDefaultWeaponData();
-//     data.enabled = false;
-//     return data;
-// }
-//
-// function readWeaponControls(weaponId)
-// {
-//     var weaponData = new Object;
-//     var weaponDiv = $(weaponId);
-//     // weaponData.enabled = weaponDiv.find("#weaponEnabled")[0].checked;
-//     // weaponData.rangeMin = weaponDiv.find("#rangeMin")[0].value;
-//     // weaponData.rangeMax = weaponDiv.find("#rangeMax")[0].value;
-//     // weaponData.attacks = weaponDiv.find("#attacks")[0].value;
-//     // weaponData.strength = weaponDiv.find("#strength")[0].value;
-//     // weaponData.damageBase = weaponDiv.find("#damageBase")[0].value;
-//     // weaponData.damageCrit = weaponDiv.find("#damageCrit")[0].value;
-//     weaponData.runemark = getSelectedRunemark(weaponDiv.find("#weaponRunemarkSelect")[0]);
-//     return weaponData;
-// }
-//
-// function writeWeaponControls(weaponId, weaponData, weaponName)
-// {
-//     weaponDiv = $(weaponId);
-//     // weaponDiv.find("#weaponEnabled")[0].checked = weaponData.enabled;
-//     // weaponDiv.find("#weaponInputs")[0].style.display = weaponData.enabled ? "block" : "none";
-//     // weaponDiv.find("#rangeMin")[0].value = weaponData.rangeMin;
-//     // weaponDiv.find("#rangeMax")[0].value = weaponData.rangeMax;
-//     // weaponDiv.find("#attacks")[0].value = weaponData.attacks;
-//     // weaponDiv.find("#strength")[0].value = weaponData.strength;
-//     // weaponDiv.find("#damageBase")[0].value = weaponData.damageBase;
-//     // weaponDiv.find("#damageCrit")[0].value = weaponData.damageCrit;
-//     setSelectedRunemark(
-//         weaponDiv.find("#weaponRunemarkSelect")[0],
-//         weaponData.runemark,
-//         weaponName,
-//         "white");
-// }
-
 
 function readtagRunemarksOne() {
     var array = new Array;
@@ -561,7 +155,7 @@ function readTagRunemarksThree() {
 
     for (i = 0; i < checkedBoxes.length; i++) {
         array.push(getImage(getLabel(checkedBoxes[i])).getAttribute("src"));
-    }
+    }6
     return array;
 }
 function readTagRunemarksFour() {
@@ -765,94 +359,9 @@ function drawSubfactionRunemark(image) {
 
 render = function(cardData) {
     drawBackground();
-    // drawModel(cardData.imageUrl, cardData.imageProperties);
-
-    drawCardTranslationAbilities(cardData.cardTranslationAbilities);
-    drawCardTitle(cardData.cardTitle);
-
+    renderAbilities();
     drawFactionRunemark(cardData.factionRunemark);
     drawSubfactionRunemark(cardData.subfactionRunemark);
-
-    // getContext().font = "92px rodchenkoctt";
-    // getContext().fillStyle = "white";
-
-    // getContext().textBaseline = "middle";
-    // getContext().textAlign = "left";
-
-    // drawMove(cardData.move);
-    // drawWounds(cardData.wounds);
-
-    // getContext().textBaseline = "middle";
-    // getContext().textAlign = "right";
-
-    // drawToughness(cardData.toughness);
-
-    if (document.getElementById('ability1-toggle').checked) {
-        drawAbility(1, {x: 600, y:  225});
-    }
-
-    if (document.getElementById('ability2-toggle').checked) {
-        drawAbility(2, {x: 600, y:  400});
-    }
-
-    if (document.getElementById('ability3-toggle').checked) {
-        drawAbility(3, {x: 600, y:  575});
-    }
-
-    if (document.getElementById('ability4-toggle').checked) {
-        drawAbility(4, {x: 600, y:  750});
-    }
-
-    if (document.getElementById('ability5-toggle').checked) {
-        drawAbility(5, {x: 600, y:  925});
-    }
-
-    if (document.getElementById('ability6-toggle').checked) {
-        drawAbility(6, {x: 600, y: 1100});
-    }
-
-    // getContext().textBaseline = "middle";
-    // getContext().textAlign = "center";
-
-    // drawPointCost(cardData.pointCost);
-
-    // getContext().font = "70px rodchenkoctt";
-    // getContext().textBaseline = "top";
-    // getContext().textAlign = "left";
-    // getContext().fillStyle = "black";
-
-    // if (cardData.weapon1.enabled && cardData.weapon2.enabled)
-    // {
-    //     drawWeapon(cardData.weapon1, {x: 50, y: 750}); // Default was x:29, y:397
-    //     drawWeapon(cardData.weapon2, {x: 50, y: 950}); // Default was x:29, y:564
-    // }
-    // else if (cardData.weapon1.enabled)
-    // {
-    //     drawWeapon(cardData.weapon1, {x: 50, y: 850}); // Default was x:29, y:463
-    // }
-    // else if (cardData.weapon2.enabled)
-    // {
-    //     drawWeapon(cardData.weapon2, {x: 50, y: 850}); // Default was x:29, y:463
-    // }
-
-    for (i = 0; i < cardData.tagRunemarksOne.length; i++) {
-        drawTagRunemark(i, cardData.tagRunemarksOne[i], 1);
-    }
-    for (i = 0; i < cardData.tagRunemarksTwo.length; i++) {
-        drawTagRunemark(i, cardData.tagRunemarksTwo[i], 2);
-    }
-    for (i = 0; i < cardData.tagRunemarksThree.length; i++) {
-        drawTagRunemark(i, cardData.tagRunemarksThree[i], 3);
-    }
-    for (i = 0; i < cardData.tagRunemarksFour.length; i++) {
-        drawTagRunemark(i, cardData.tagRunemarksFour[i], 4);
-    }
-    for (i = 0; i < cardData.tagRunemarksFive.length; i++) {
-        drawTagRunemark(i, cardData.tagRunemarksFive[i], 5);
-    }
-    for (i = 0; i < cardData.tagRunemarksSix.length; i++) {
-        drawTagRunemark(i, cardData.tagRunemarksSix[i], 6);
-    }
 
 };
 
