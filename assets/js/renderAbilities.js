@@ -12,30 +12,6 @@ renderAbilities = function(cardData) {
     abilityTextHeight = 600;
     drawAbilities();
 
-    // if (document.getElementById('ability1-toggle').checked) {
-    //     drawAbility(cardData.ctx, 1, {x: 1000, y:  225});
-    // }
-
-    // if (document.getElementById('ability2-toggle').checked) {
-    //     drawAbility(cardData.ctx, 2, {x: 1000, y:  400});
-    // }
-
-    // if (document.getElementById('ability3-toggle').checked) {
-    //     drawAbility(cardData.ctx, 3, {x: 1000, y:  575});
-    // }
-
-    // if (document.getElementById('ability4-toggle').checked) {
-    //     drawAbility(cardData.ctx, 4, {x: 1000, y:  750});
-    // }
-
-    // if (document.getElementById('ability5-toggle').checked) {
-    //     drawAbility(cardData.ctx, 5, {x: 1000, y:  925});
-    // }
-
-    // if (document.getElementById('ability6-toggle').checked) {
-    //     drawAbility(cardData.ctx, 6, {x: 1000, y: 1100});
-    // }
-
 
     for (i = 0; i < cardData.tagRunemarksOne.length; i++) {
         drawTagRunemark(i, cardData.tagRunemarksOne[i], 1);
@@ -63,7 +39,6 @@ drawAbilities = function() {
     var yOffset = 50;
 
     for (i=0; i < $(cards).length; i++) {
-        console.log('card: ' + $(cards)[i]);
         drawAbility2($(cards)[i], {x: 1000, y: abilityTextHeight + yOffset});
         yOffset = yOffset + 50;
     }
@@ -82,7 +57,6 @@ drawAbility2 = function(card, pixelPosition) {
     var textblock = (function() {
         var txt = '';
         var txt = '[' + dieRoll + '] ' + name + ': ' + text;
-        console.log('txt: ' + txt);
 
         var lines = getLines(getContext(), txt, canvas.width - 1050)
 
@@ -94,66 +68,9 @@ drawAbility2 = function(card, pixelPosition) {
             abilityTextHeight = abilityTextHeight + height;
 
         }
-        // let metrics = ctx.measureText(txt);
-        // let fontHeight = metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent;
-        // let actualHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
-        // // console.log('actualHeight:' + actualHeight);
-        // return actualHeight;
     })();
 }
 
-drawAbility = function(ctx, id, pixelPosition) {
-    getContext().font = '28px Georgia, serif';
-    getContext().fillStyle = 'black';
-    getContext().textAlign = 'left';
-
-    var double      = document.getElementById('ability' + id + '-double'),
-        triple      = document.getElementById('ability' + id + '-triple'),
-        quad        = document.getElementById('ability' + id + '-quad'),
-        name        = document.getElementById('ability' + id + '-name').value,
-        text        = document.getElementById('ability' + id + '-text').value,
-        transDouble = document.getElementById('card-translation-double').value,
-        transTriple = document.getElementById('card-translation-triple').value,
-        transQuad   = document.getElementById('card-translation-quad').value;
-
-    // https://stackoverflow.com/a/35119260; http://jsfiddle.net/BaG4J/1/
-    var textblock = (function() {
-        var txt = '';
-
-        if (double.checked) {
-            if (transDouble.length) {
-                var txt = '[' + transDouble + '] ' + name + ': ' + text;
-            } else {
-                var txt = '[Double] ' + name + ': ' + text;
-            }
-        } else if (triple.checked) {
-            if (transTriple.length) {
-                var txt = '[' + transTriple + '] ' + name + ': ' + text;
-            } else {
-                var txt = '[Triple] ' + name + ': ' + text;
-            }
-        } else if (quad.checked) {
-            if (transQuad.length) {
-                var txt = '[' + transQuad + '] ' + name + ': ' + text;
-            } else {
-                var txt = '[Quad] ' + name + ': ' + text;
-            }
-        }
-
-        // var lines = txt.split('\n');
-        var lines = getLines(getContext(), txt, canvas.width - 1050)
-
-        for (var i = 0; i < lines.length; i++) {
-            writeScaled(
-                lines[i],
-                {x: pixelPosition.x, y: pixelPosition.y+(i*35)}
-            );
-        }
-    })();
-}
-
-
-// All deps
 drawCardTranslationAbilities = function(value) {
     getContext().font = '28px Georgia, serif';
     getContext().fillStyle = 'white';
@@ -161,12 +78,12 @@ drawCardTranslationAbilities = function(value) {
     writeScaled(value, {x: (1772/2), y: 55});
 }
 
-// All deps
+// i.e Unit name
 drawCardTitle = function(value) {
     getContext().font = '92px rodchenkoctt';
-    getContext().fillStyle = 'white';
+    getContext().fillStyle = 'black';
     getContext().textAlign = 'center';
-    writeScaled(value, {x: (1772/2), y: 135});
+    writeScaled(value, {x: 1386, y: 10});
 }
 
 
@@ -227,26 +144,16 @@ function drawTagRunemark(index, runemark, row) {
     drawImageSrc(position, size, runemark);
 }
 
-// All deps
 getCanvas = function() {
     return document.getElementById("canvas");
 }
 
-// getCheckedAbilities = function() {
-//     var checkboxes = document.querySelectorAll('[type="checkbox"][id^="ability"][id$="toggle]:checked');
-//     var cards = checkboxes.closest('[class="card"]');
-//     return cards;
-// }
-
 getCheckboxCards = function(checkboxes) {
     var checkboxes = $('[type="checkbox"][id^="ability"][id$="toggle"]:checked');
-    console.log('checkboxes: ' + checkboxes.length);
     var cards = $(checkboxes).closest('[class="card"]');
-    console.log('cards: ' + cards.length);
     return cards;
 }
 
-// All deps
 getContext = function() {
     return getCanvas().getContext("2d");
 }
@@ -259,9 +166,7 @@ getDieRoll = function(card) {
 
 getLines = function(ctx, text, maxWidth) {
     ctx = getContext();
-    console.log("text: " + text);
     var words = text.split(" ");
-    console.log(words);
     var lines = [];
     var currentLine = words[0];
 
@@ -321,9 +226,7 @@ writeValue = function(ctx, value, pos) {
     ctx.fillText(value, pos.x, pos.y);
     ctx.restore();
     let metrics = ctx.measureText(value);
-    let fontHeight = metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent;
     let actualHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
-    console.log('actualHeight:' + actualHeight);
     return actualHeight;
 }
 

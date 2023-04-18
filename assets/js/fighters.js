@@ -21,6 +21,10 @@ getCanvas = function() {
     return document.getElementById("canvas");
 }
 
+getAbilityCanvas = function() {
+    return document.getElementById("fighter-abilitycanvas");
+}
+
 getContext = function() {
     return getCanvas().getContext("2d");
 }
@@ -323,8 +327,8 @@ function setModelImage(image)
 function getDefaultModelImageProperties()
 {
     return {
-        offsetX: 0,
-        offsetY: 0,
+        offsetX: 500,
+        offsetY: 50,
         scalePercent: 100
     };
 }
@@ -543,44 +547,6 @@ render = function(fighterData, cardData) {
 
     // // Abilities
     renderAbilities(cardData);
-
-
-    // 
-    // 
-    // 
-
-    // drawBackground();
-    // // drawModel(cardData.imageUrl, cardData.imageProperties);
-
-    // drawCardTranslationAbilities(cardData.cardTranslationAbilities);
-    // // drawCardTitle(cardData.cardTitle);
-
-    // // drawFactionRunemark(cardData.factionRunemark);
-    // // drawSubfactionRunemark(cardData.subfactionRunemark);
-
-    // if (document.getElementById('ability1-toggle').checked) {
-    //     drawAbility(1, {x: 1000, y:  600});
-    // }
-
-    // if (document.getElementById('ability2-toggle').checked) {
-    //     drawAbility(2, {x: 1000, y:  750});
-    // }
-
-    // if (document.getElementById('ability3-toggle').checked) {
-    //     drawAbility(3, {x: 1000, y:  900});
-    // }
-
-    // if (document.getElementById('ability4-toggle').checked) {
-    //     drawAbility(4, {x: 1000, y:  750});
-    // }
-
-    // if (document.getElementById('ability5-toggle').checked) {
-    //     drawAbility(5, {x: 1000, y:  925});
-    // }
-
-    // if (document.getElementById('ability6-toggle').checked) {
-    //     drawAbility(6, {x: 1000, y: 1100});
-    // }
 }
 
 function writeControls(fighterData)
